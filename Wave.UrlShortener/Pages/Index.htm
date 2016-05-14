@@ -1,0 +1,76 @@
+﻿#<laconf>
+    compiler
+    {
+    using { ns="System.Linq" }
+    using { ns="System.Collections.Generic" }
+    using { ns="Wave.UrlShortener.Models" }
+    using { ns="NFX" }
+    using { ns="NFX.Wave" }
+    using { ns="NFX.Wave.Templatization" }
+    base-class-name="Wave.UrlShortener.Pages.Master"
+    namespace="Wave.UrlShortener.Pages"
+    }
+#</laconf>
+#[class]
+
+  public IEnumerable<UrlRecord> Urls { get; set; }
+
+#[override renderBody()]
+<div>
+    <h1>Url shortener</h1>
+    <form class="block" action="/Home/AddUrl" method="POST">
+        <label>
+            Paste your long URL here:
+            <input name="url"/>
+        </label>
+        <button type="submit">Shorten URL</button>
+    </form>
+    <table class="url-table">
+        <thead>
+            <tr>
+                <th>Long Url</th>
+                <th>Created</th>
+                <th>Short Url</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @[foreach (var url in Urls){]
+            <tr id="?[url.ID]">
+                <td><a href="?[url.OriginalUrl]">@[RemoveScheme(url.OriginalUrl);]</a></td>
+                <td>?[url.CreateDate]</td>
+                <td><a href="?[url.ShortUrl]">@[RemoveScheme(url.ShortUrl);]</a></td>
+                <td><a href="#" class="btn remove" data-id="?[url.ID]">Remove</a></td>
+            </tr>
+            @[}]
+        </tbody>
+    </table>
+</div>
+
+<script type="text/javascript">
+    (function() {
+        function remove(event) {
+            var id = this.getAttribute('data-id');
+            var request = new XMLHttpRequest();
+            request.open("POST", '/Home/Remove?id=' + id);
+            request.onreadystatechange = function() {
+                if (request.readyState == 4 && request.status == 200) {
+                    var row = WAVE.id(id);
+                    row.remove();
+                }
+            }
+            request.send();
+            event.preventDefault();
+        }
+
+        var removeBtns = document.getElementsByClassName("btn remove");
+        for (var i = 0; i < removeBtns.length; i++) {
+            removeBtns[i].addEventListener('click', remove);
+        }
+    })();
+
+</script>
+
+#[RemoveScheme(string url)]
+@[ var uri =new Uri(url);]
+?[uri.Host + uri.PathAndQuery]

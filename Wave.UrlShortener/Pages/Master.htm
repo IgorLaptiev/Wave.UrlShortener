@@ -1,0 +1,32 @@
+﻿#<laconf>
+  compiler
+  {
+    using { ns="NFX" }
+    using { ns="NFX.Wave" }
+    using { ns="NFX.Wave.Templatization" }
+    base-class-name="NFX.Wave.Templatization.WaveTemplate"
+    abstract="true"
+    namespace="Wave.UrlShortener.Pages"
+  }  
+#</laconf>
+
+#[class]
+
+  protected abstract void renderBody();
+  protected virtual void renderStyles() { }
+
+#[render]
+<!DOCTYPE html>
+<html>
+<head>
+  @[renderStyles();]
+  <link rel="stylesheet" href="/res/site.css" type="text/css">
+  <script src="/stock/site/script/wv.js"></script>
+  <script src="/stock/site/script/wv.gui.js"></script>
+</head>
+<body> 
+  <div id="root">
+    @[renderBody();]
+  </div>
+</body>
+</html>

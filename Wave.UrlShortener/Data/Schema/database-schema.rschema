@@ -1,0 +1,23 @@
+﻿schema
+{
+    TID="TVarchar(32)"
+    TName="TVarchar(32)"
+
+    table=urls
+    {
+        comment="Url recode table"
+
+        column=ID { type=$(/$TID) required=true comment="Unique identifier" }
+        column=OriginalUrl { type=TVarchar(2000) required=true comment="Original url" }
+        column=ShortUrl { type=TVarchar(100) required=true comment="Short url" }
+        column=CreateDate { type=TDateTime required=true comment="Url create date" }
+        column=LastAccessDate { type=TDateTime required=false comment="Url last access date" }
+
+        primary-key { column=ID{} }
+		index=shortUrl {
+		   uninque=true,
+		   column=ShortUrl{}
+		} 
+		
+    }
+}

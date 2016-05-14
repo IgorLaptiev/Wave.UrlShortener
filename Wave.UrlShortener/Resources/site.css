@@ -1,0 +1,42 @@
+﻿body #root {
+  margin: 20px;
+  font-family: Arial;
+  font-size: 16px;
+  line-height: 1.7em;
+}
+body #root > div {
+  padding: 20px;
+  background-color: #fafafa;
+}
+body #root > div h1 {
+  font-size: 2em;
+}
+body #root > div form {
+  margin: 20px 0;
+}
+body #root > div form input {
+  height: 24px;
+  width: 46%;
+  margin-left: 10px;
+}
+body #root > div form button {
+  height: 35px;
+  width: 160px;
+  border-radius: 2px;
+  border: 1px solid gray;
+  margin-left: 10px;
+  cursor: pointer;
+}
+body #root > div form button :hover {
+  background-color: #d0d0d0;
+}
+body #root > div table.url-table {
+  border: solid 1px gray;
+  width: 80%;
+}
+body #root > div table.url-table thead {
+  background-color: #ddd;
+}
+body #root > div table.url-table tbody tr:nth-child(even) {
+  background-color: #f0f0f0;
+}

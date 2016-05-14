@@ -1,0 +1,97 @@
+﻿application
+{
+    data-store
+    {
+         type="NFX.DataAccess.MySQL.MySQLDataStore, NFX.MySQL"
+        connect-string="Server=localhost;Database=urlsh;Uid=root;Pwd=SAPassword"
+        script-assembly="Wave.UrlShortener"
+    }
+
+    wave
+    {
+        server
+        {
+            prefix { name="http://localhost:8080/" }
+
+            dispatcher
+            {  
+			    filter
+                {   
+                    order=0
+                    name="Log All" 
+                    type="NFX.Wave.Filters.LoggingFilter, NFX.Wave"   
+                    before
+                    {
+                        match { name="all" }
+                    }
+                    after
+                    {
+                        match { name="all" }
+                    }
+                }
+                filter
+                {
+                    order=1
+                    name="DumpErrors"
+                    type="NFX.Wave.Filters.ErrorFilter, NFX.Wave"
+                 
+					 log 
+                    {
+                        match { name="all" }
+                    }
+                }
+
+			    filter
+                {
+                    order=2
+                    name="ShortUlrRedirect"
+                    type="Wave.UrlShortener.Filters.ShortUlrRedirectFilter, Wave.UrlShortener"
+
+					
+                }
+
+                handler
+                {
+                    order=0
+                    type="NFX.Wave.Handlers.FileDownloadHandler, NFX.Wave"
+                    root-path=$"Resources/"
+                    match { path="/res/{*filePath}" }
+                }
+
+                handler
+                {
+                    order=100
+                    name="Stock Content Embedded Site"
+                    order=1000
+                    type="NFX.Wave.Handlers.StockContentSiteHandler, NFX.Wave"
+                    match{ path="/stock/{*path}"}
+                }
+
+                handler
+                {
+                    order=200
+                    type="NFX.Wave.Handlers.MVCHandler, NFX.Wave"
+                    type-location { assembly="Wave.UrlShortener.exe" ns { name="Wave.UrlShortener.Controllers" } }
+                    match { path="/{type=Home}/{mvc-action=Index}" var { query-name="*" } }
+                }
+            }
+        }
+    }
+	log="Logger"
+	{
+	destination 
+        {            
+            name="TestLogDestination" 
+            type="NFX.Log.Destinations.CSVFileDestination, NFX" 
+
+            // this is the path to your log file on disk relative to executing 
+            // assembly. Empty path in quotes corresponds project *.exe location.
+            // Ensure the path physically exists before use it here.
+            path=$"logs/"   
+                       
+            name-time-format='yyyyMMdd' 
+            generate-failover-msg=false 
+        } 
+
+	}
+}
